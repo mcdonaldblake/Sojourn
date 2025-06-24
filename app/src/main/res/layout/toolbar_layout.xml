@@ -1,18 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/my_toolbar"
-    style="@style/Theme.Material3.Light.BottomSheetDialog"
-    android:layout_width="match_parent"
-    android:layout_height="60dp"
-    android:background="@color/material_dynamic_primary70"
-    android:backgroundTint="#D1C8C8"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-    app:buttonGravity="bottom"
-    app:subtitleTextAppearance="@style/TextAppearance.AppCompat.Body1"
-    app:title="Vacation Planner"
-    app:titleTextColor="@color/material_dynamic_tertiary20" />
-
-
+xmlns:app="http://schemas.android.com/apk/res-auto"
+android:id="@+id/my_toolbar"
+android:layout_width="match_parent"
+android:layout_height="?attr/actionBarSize">
+<!-- All specific color, theme, and style attributes have been removed -->
+<!-- It will now correctly use the styles from your themes.xml -->
+</androidx.appcompat.widget.Toolbar>

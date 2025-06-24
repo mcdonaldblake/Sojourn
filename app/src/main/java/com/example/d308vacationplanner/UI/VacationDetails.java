@@ -154,6 +154,11 @@ public class VacationDetails extends AppCompatActivity {
             return true;
         }
 
+        if (itemId == R.id.action_share_vacation) {
+            shareVacationDetails();
+            return true;
+        }
+
         if (itemId == android.R.id.home) {
             this.finish();
             return true;
@@ -232,7 +237,6 @@ public class VacationDetails extends AppCompatActivity {
             return;
         }
 
-        // ✅ ADDED VALIDATION: Check if the end date is before the start date.
         if (endDate.before(startDate)) {
             Toast.makeText(this, "End date cannot be before the start date.", Toast.LENGTH_LONG).show();
             return; // Stop the method if validation fails
@@ -264,4 +268,30 @@ public class VacationDetails extends AppCompatActivity {
         return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
                 cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
     }
+
+    private void shareVacationDetails() {
+        if (currentVacation == null) {
+            Toast.makeText(this, "Cannot share, vacation details not loaded yet.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // 1. Create the message content by combining all the vacation details
+        String shareBody = "Check out my vacation plans!\n\n" +
+                "Title: " + currentVacation.getVacationName() + "\n" +
+                "Hotel: " + currentVacation.getHotel() + "\n" +
+                "Start Date: " + currentVacation.getStartDate() + "\n" +
+                "End Date: " + currentVacation.getEndDate();
+
+        // 2. Create a generic "share" Intent
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+
+        // 3. Add the content to the intent
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "My Vacation Details: " + currentVacation.getVacationName());
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+
+        // 4. Launch the Android share dialog
+        startActivity(Intent.createChooser(sharingIntent, "Share via"));
+    }
 }
+

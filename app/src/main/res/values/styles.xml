@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        This is a custom style for the overflow popup menu.
+        You can customize the background and text colors here.
+    -->
+    <style name="App.PopupMenu" parent="Widget.AppCompat.PopupMenu.Overflow">
+        <!-- Set the background color of the popup menu -->
+        <item name="android:background">@color/white</item>
+        <!-- Set the color of the text for each menu item -->
+        <item name="android:textColor">@color/black</item>
+    </style>
+</resources>

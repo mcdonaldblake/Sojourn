@@ -44,6 +44,7 @@ dependencies {
 
     // Room
     implementation libs.androidx.room.runtime
+    implementation libs.appcompat
     annotationProcessor libs.androidx.room.compiler
 
     // Testing

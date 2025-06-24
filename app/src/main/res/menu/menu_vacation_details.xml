@@ -19,8 +19,15 @@
 
     <item
         android:id="@+id/action_set_alerts"
-        android:title="Set Alerts"
+        android:title="Set Alerts for Start and End Date"
         app:showAsAction="never"
         android:textColor="@android:color/black"
         android:textSize="18sp"/>
+    <item
+        android:id="@+id/action_share_vacation"
+        android:title="Share Vacation"
+        app:showAsAction="never"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"/>
+
 </menu>

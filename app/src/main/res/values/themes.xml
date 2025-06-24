@@ -3,6 +3,7 @@
         <item name="colorPrimary">@color/md_theme_light_primary</item>
         <item name="colorOnPrimary">@color/md_theme_light_onPrimary</item>
         <item name="android:statusBarColor">?attr/colorPrimary</item>
+        <item name="popupMenuStyle">@style/App.PopupMenu</item>
     </style>
     <style name="Theme.D308VacationPlanner" parent="Base.Theme.D308VacationPlanner" />
 </resources>

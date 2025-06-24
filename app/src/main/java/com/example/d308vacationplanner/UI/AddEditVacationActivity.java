@@ -15,6 +15,7 @@ import com.example.d308vacationplanner.entities.Vacation;
 import com.example.d308vacationplanner.viewModel.VacationViewModel;
 import com.google.android.material.datepicker.MaterialDatePicker;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -94,20 +95,37 @@ public class AddEditVacationActivity extends AppCompatActivity {
 
     private void saveVacation() {
         // Read the text from each EditText field
-        String title = mEditTitle.getText().toString().trim();
-        String hotel = mEditHotel.getText().toString().trim();
-        String startDate = mEditStartDate.getText().toString().trim();
-        String endDate = mEditEndDate.getText().toString().trim();
+        String updatedName = mEditTitle.getText().toString().trim();
+        String updatedHotel = mEditHotel.getText().toString().trim();
+        String updatedStartDate = mEditStartDate.getText().toString().trim();
+        String updatedEndDate = mEditEndDate.getText().toString().trim();
 
         // Basic validation to make sure fields are not empty
-        if (title.isEmpty() || hotel.isEmpty() || startDate.isEmpty() || endDate.isEmpty()) {
+        if (updatedName.isEmpty() || updatedHotel.isEmpty() || updatedStartDate.isEmpty() || updatedEndDate.isEmpty()) {
             Toast.makeText(this, "Please fill out all fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        SimpleDateFormat sdf = new SimpleDateFormat("MM-DD-YY", Locale.US);
+        Date startDate = null;
+        Date endDate = null;
+
+        try {
+            startDate = sdf.parse(updatedStartDate);
+            endDate = sdf.parse(updatedEndDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Invalid date format. Please use MM-DD-YY.", Toast.LENGTH_SHORT).show();
+            return; // Stop the save if dates are invalid
+        }
+
+        if (endDate.before(startDate)) {
+            Toast.makeText(this, "End date cannot be before the start date.", Toast.LENGTH_SHORT).show();
+            return; // Stop the save if the end date is before the start date
+        }
         // Create a new Vacation object with an ID of 0.
         // Room will auto-generate the real ID.
-        Vacation newVacation = new Vacation(0, title, hotel, startDate, endDate); // Using 0.0 for price temporarily
+        Vacation newVacation = new Vacation(0, updatedName, updatedHotel, updatedStartDate, updatedEndDate); // Using 0.0 for price temporarily
         mVacationViewModel.insert(newVacation);
 
         Toast.makeText(this, "Vacation saved!", Toast.LENGTH_SHORT).show();

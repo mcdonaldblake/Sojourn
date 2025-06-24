@@ -29,6 +29,7 @@ import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -161,10 +162,28 @@ public class VacationDetails extends AppCompatActivity {
         String updatedStartDate = editStartDate.getText().toString().trim();
         String updatedEndDate = editEndDate.getText().toString().trim();
 
-        // Basic validation
+
         if (updatedName.isEmpty() || updatedHotel.isEmpty()) {
             Toast.makeText(this, "Please fill out all fields.", Toast.LENGTH_SHORT).show();
             return;
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy", Locale.US);
+        Date startDate = null;
+        Date endDate = null;
+
+        try {
+            startDate = sdf.parse(updatedStartDate);
+            endDate = sdf.parse(updatedEndDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Invalid date format. Please use MM/DD/YY.", Toast.LENGTH_SHORT).show();
+            return; // Stop the save if dates are invalid
+        }
+
+        if (endDate.before(startDate)) {
+            Toast.makeText(this, "End date cannot be before the start date.", Toast.LENGTH_SHORT).show();
+            return; // Stop the save if the end date is before the start date
         }
 
         // Create the updated Vacation object with all the new data

@@ -1,5 +1,6 @@
 package com.example.d308vacationplanner.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -7,8 +8,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.example.d308vacationplanner.entities.Excursion;
-import com.example.d308vacationplanner.entities.Vacations;
+import com.example.d308vacationplanner.entities.Vacation;
 
 import java.util.List;
 
@@ -16,15 +16,18 @@ import java.util.List;
 public interface VacationDAO {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void insert(Vacations vacations);
+    void insert(Vacation vacation);
 
     @Update
-    void update (Vacations vacations);
+    void update (Vacation vacation);
 
     @Delete
-    void delete (Vacations vacations);
+    void delete (Vacation vacation);
 
-    @Query("SELECT * FROM VACATIONS ORDER BY vacationID ASC")
-    List<Vacations> getAllVacations();
+    @Query("SELECT * FROM Vacations ORDER BY vacationID ASC")
+    LiveData<List<Vacation>> getAllVacations();
+
+    @Query("SELECT * FROM vacations WHERE vacationID = :vacationId")
+    LiveData<Vacation> getVacationById(int vacationId);
 
 }

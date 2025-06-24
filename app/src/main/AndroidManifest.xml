@@ -17,6 +17,16 @@
             android:label="Excursion Details"
             android:parentActivityName=".UI.VacationDetails"
             android:exported="false" />
+        <activity android:name=".UI.AddEditExcursionActivity"
+            android:label="Add/Edit Excursion"
+            android:parentActivityName=".UI.VacationDetails"
+            android:exported="false"/>
+
+        <activity
+            android:name=".UI.AddEditVacationActivity"
+            android:label="Add/Edit Vacation"
+            android:parentActivityName=".UI.VacationList"
+            android:exported="false" />
         <activity
             android:name=".UI.VacationDetails"
             android:exported="false"

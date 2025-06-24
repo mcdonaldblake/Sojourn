@@ -1,15 +1,19 @@
+// This is the correct structure for a build.gradle file using Groovy and a version catalog
+
+// ✅ 1. The 'plugins' block must be at the top
 plugins {
     alias(libs.plugins.android.application)
 }
 
+// ✅ 2. The 'android' block contains all your app's configuration
 android {
     namespace 'com.example.d308vacationplanner'
-    compileSdk 35
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.example.d308vacationplanner"
         minSdk 26
-        targetSdk 35
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -23,22 +27,27 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
+// ✅ 3. The 'dependencies' block uses the correct Groovy syntax (no parentheses)
 dependencies {
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.material
+    implementation libs.androidx.constraintlayout
+    implementation libs.androidx.activity
+    implementation libs.androidx.fragment
+    implementation libs.androidx.lifecycle.viewmodel
+    implementation libs.androidx.lifecycle.livedata
 
-    implementation libs.appcompat
-    implementation libs.material
-    implementation libs.activity
-    implementation libs.constraintlayout
+    // Room
+    implementation libs.androidx.room.runtime
+    annotationProcessor libs.androidx.room.compiler
+
+    // Testing
     testImplementation libs.junit
-    androidTestImplementation libs.ext.junit
-    androidTestImplementation libs.espresso.core
-    implementation libs.room.runtime
-    annotationProcessor libs.room.compiler
-
-
+    androidTestImplementation libs.androidx.test.ext.junit
+    androidTestImplementation libs.androidx.test.espresso.core
 }

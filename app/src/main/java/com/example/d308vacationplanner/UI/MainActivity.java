@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.d308vacationplanner.R;
 
@@ -20,20 +21,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-                    Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-                    v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-                    return insets;
-                });
-            Button button=findViewById(R.id.enter_button);
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent=new Intent(MainActivity.this, VacationList.class);
-                    intent.putExtra("test", "Information Sent");
-                    startActivity(intent);
 
-            }
+        Toolbar toolbar = findViewById(R.id.my_toolbar);
+        setSupportActionBar(toolbar);
+
+        Button button = findViewById(R.id.enter_button);
+        button.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, VacationList.class);
+            intent.putExtra("test", "Information Sent");
+            startActivity(intent);
         });
     }
 }

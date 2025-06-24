@@ -7,6 +7,14 @@
     android:layout_height="match_parent"
     tools:context=".UI.MainActivity">
 
+    <include
+        android:id="@+id/my_toolbar"
+        layout="@layout/toolbar_layout"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
@@ -19,7 +27,7 @@
         app:layout_constraintBottom_toBottomOf="@id/imageView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="parent"
         app:layout_constraintVertical_bias="0.060000002" />
 
     <Button

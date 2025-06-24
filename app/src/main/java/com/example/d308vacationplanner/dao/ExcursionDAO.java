@@ -1,5 +1,6 @@
 package com.example.d308vacationplanner.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -23,10 +24,13 @@ public interface ExcursionDAO {
     void delete (Excursion excursion);
 
     @Query("SELECT * FROM EXCURSIONS ORDER BY excursionID ASC")
-    List<Excursion> getAllExcursions();
+    LiveData<List<Excursion>> getAllExcursions();
 
     @Query("SELECT * FROM EXCURSIONS WHERE vacationID = :vacationID ORDER BY excursionID ASC")
-    List<Excursion> getAssociatedExcursions(int vacationID);
+    LiveData<List<Excursion>> getAssociatedExcursions(int vacationID);
+
+    @Query("SELECT COUNT(*) FROM excursions WHERE vacationID = :vacationId")
+    int getExcursionCountForVacation(int vacationId);
 
 
 }

@@ -1,7 +1,12 @@
 package com.example.d308vacationplanner.UI;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,6 +36,7 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -111,6 +117,7 @@ public class VacationDetails extends AppCompatActivity {
             startActivity(intent);
         });
     }
+
     private void showDatePicker(final TextInputEditText dateEditText, String title) {
         MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
         builder.setTitleText(title);
@@ -140,11 +147,11 @@ public class VacationDetails extends AppCompatActivity {
         if (itemId == R.id.action_save_vacation) {
             saveChanges();
             return true;
+
         }
-
         if (itemId == R.id.action_set_alerts) {
-
-
+            scheduleToastAlerts();
+            return true;
         }
 
         if (itemId == android.R.id.home) {
@@ -192,5 +199,69 @@ public class VacationDetails extends AppCompatActivity {
 
         Toast.makeText(this, "Vacation details saved.", Toast.LENGTH_SHORT).show();
         finish();
+    }
+
+    private void scheduleToastAlerts() {
+        String vacationName = editName.getText().toString();
+        String startDateStr = editStartDate.getText().toString();
+        String endDateStr = editEndDate.getText().toString();
+        String format = "MM/dd/yy";
+        SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
+
+        if (startDateStr.isEmpty() || endDateStr.isEmpty()) {
+            Toast.makeText(this, "Please select both a start and end date.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        Date startDate;
+        Date endDate;
+        Date today;
+
+        try {
+            startDate = sdf.parse(startDateStr);
+            endDate = sdf.parse(endDateStr);
+
+            Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+            today = cal.getTime();
+        } catch (ParseException e) {
+            Toast.makeText(this, "Invalid date format.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // ✅ ADDED VALIDATION: Check if the end date is before the start date.
+        if (endDate.before(startDate)) {
+            Toast.makeText(this, "End date cannot be before the start date.", Toast.LENGTH_LONG).show();
+            return; // Stop the method if validation fails
+        }
+
+        Toast.makeText(this, "Alerts have been set.", Toast.LENGTH_SHORT).show();
+
+        if (isSameDay(startDate, today)) {
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                Toast.makeText(VacationDetails.this, "Your vacation, '" + vacationName + "', begins today!", Toast.LENGTH_LONG).show();
+            }, 2000);
+        }
+
+        if (isSameDay(endDate, today)) {
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                Toast.makeText(VacationDetails.this, "Your vacation, '" + vacationName + "', ends today!", Toast.LENGTH_LONG).show();
+            }, 4000);
+        }
+    }
+
+    private boolean isSameDay(Date date1, Date date2) {
+        if (date1 == null || date2 == null) {
+            return false;
+        }
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(date1);
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(date2);
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
     }
 }

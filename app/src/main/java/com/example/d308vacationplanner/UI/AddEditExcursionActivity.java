@@ -72,7 +72,7 @@ public class AddEditExcursionActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Use the same save menu as the AddEditVacationActivity
-        getMenuInflater().inflate(R.menu.menu_vacation_details, menu);
+        getMenuInflater().inflate(R.menu.menu_add_vacation, menu);
         return true;
     }
 
@@ -105,7 +105,7 @@ public class AddEditExcursionActivity extends AppCompatActivity {
         }
 
         // Create a new excursion object, linking it with the correct vacationId
-        Excursion newExcursion = new Excursion(0, title, vacationId); // Price can be added later if needed
+        Excursion newExcursion = new Excursion(0, title, date, vacationId); // Price can be added later if needed
         mDetailViewModel.insert(newExcursion);
 
         Toast.makeText(this, "Excursion saved!", Toast.LENGTH_SHORT).show();

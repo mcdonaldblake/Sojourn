@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- The "Save" item to save any edits made to the vacation -->
+    <item
+        android:id="@+id/action_save_excursion"
+        android:title="Save Changes"
+        app:showAsAction="never"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"/>
+
+    <item
+        android:id="@+id/action_delete_excursion"
+        android:title="Delete Excursion"
+        app:showAsAction="never"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"/>
+
+    <item
+        android:id="@+id/action_set_alerts_excursion"
+        android:title="Set Alerts for Start and End Date"
+        app:showAsAction="never"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"/>
+    <item
+        android:id="@+id/action_share_excursion"
+        android:title="Share Vacation"
+        app:showAsAction="never"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"/>
+
+</menu>

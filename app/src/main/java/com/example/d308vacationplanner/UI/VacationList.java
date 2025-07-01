@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -31,6 +33,10 @@ public class VacationList extends AppCompatActivity {
 
     private VacationAdapter vacationAdapter;
     private VacationViewModel mVacationViewModel;
+    private LinearLayout emptyStateLayout;
+    private Button addFirstVacation;
+    private FloatingActionButton fab;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +54,12 @@ public class VacationList extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Vacation List");
+        getSupportActionBar().setTitle("Sojourn Tracker");
 
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
+        emptyStateLayout = findViewById(R.id.empty_state_layout);
+        addFirstVacation = findViewById(R.id.add_vacation_button_empty);
+        fab = findViewById(R.id.add_button);
         vacationAdapter = new VacationAdapter(this);
         recyclerView.setAdapter(vacationAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -58,35 +67,43 @@ public class VacationList extends AppCompatActivity {
         mVacationViewModel = new ViewModelProvider(this).get(VacationViewModel.class);
 
         mVacationViewModel.getAllVacations().observe(this, new Observer<List<Vacation>>() {
-                    @Override
-                    public void onChanged(List<Vacation> vacations) {
-                        vacationAdapter.setVacations(vacations);
-                    }
-                });
-
-        FloatingActionButton fab = findViewById(R.id.add_button);
-        fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(VacationList.this, AddEditVacationActivity.class);
-                startActivity(intent);
+            public void onChanged(List<Vacation> vacations) {
+                vacationAdapter.setVacations(vacations);
 
+                if (vacations == null || vacations.isEmpty()) {
+                    recyclerView.setVisibility(View.GONE);
+                    fab.setVisibility(View.GONE);
+                    emptyStateLayout.setVisibility(View.VISIBLE);
+                } else {
+                    recyclerView.setVisibility(View.VISIBLE);
+                    fab.setVisibility(View.VISIBLE);
+                    emptyStateLayout.setVisibility(View.GONE);
+                }
             }
         });
+
+        View.OnClickListener addVacationListener = view -> {
+            Intent intent = new Intent(VacationList.this, AddEditVacationActivity.class);
+            startActivity(intent);
+        };
+
+        addFirstVacation.setOnClickListener(addVacationListener);
+        fab.setOnClickListener(addVacationListener);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_save_vacation) {
-            Toast.makeText(this, "Sample data added!", Toast.LENGTH_SHORT).show();
-            return true;
-        }
+        @Override
+        public boolean onOptionsItemSelected (MenuItem item){
+            if (item.getItemId() == R.id.action_save_vacation) {
+                Toast.makeText(this, "Sample data added!", Toast.LENGTH_SHORT).show();
+                return true;
+            }
 
-        if (item.getItemId() == android.R.id.home) {
-            this.finish();
-            return true;
-        }
+            if (item.getItemId() == android.R.id.home) {
+                this.finish();
+                return true;
+            }
 
-        return super.onOptionsItemSelected(item);
+            return super.onOptionsItemSelected(item);
+        }
     }
-}

@@ -20,7 +20,7 @@ public class Repository {
 
     public Repository(Application application) {
         // Use your actual database class name here
-        vacationDatabaseBuilder db = vacationDatabaseBuilder.getDatabase(application);
+        VacationDatabaseBuilder db = VacationDatabaseBuilder.getDatabase(application);
         mExcursionDAO = db.excursionDAO();
         mVacationDAO = db.vacationDAO();
     }
@@ -29,9 +29,6 @@ public class Repository {
         return mVacationDAO.getAllVacations();
     }
 
-    public LiveData<List<Excursion>> getAllExcursions() {
-        return mExcursionDAO.getAllExcursions();
-    }
 
     public LiveData<List<Excursion>> getAssociatedExcursions(int vacationID) {
         return mExcursionDAO.getAssociatedExcursions(vacationID);
@@ -71,22 +68,7 @@ public class Repository {
                 mExcursionDAO.insert(excursion));
     }
 
-    // Add this new method inside your Repository.java class
-
-    public int getExcursionCountForVacation(int vacationId) {
-        // Note: Since this is a simple query returning a single value,
-        // we don't use LiveData. But we still run it on a background thread.
-        // This is a more advanced pattern, but it's correct for this use case.
-        final int[] count = new int[1];
-        databaseExecutor.execute(() -> {
-            count[0] = mExcursionDAO.getExcursionCountForVacation(vacationId);
-        });
-        // We add a small delay to ensure the background task has time to finish.
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return count[0];
+    public LiveData<List<Excursion>> getAllExcursions(int vacationId) {
+    return mExcursionDAO.getAllExcursions();
     }
 }

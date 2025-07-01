@@ -20,6 +20,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -126,7 +127,7 @@ public class VacationDetails extends AppCompatActivity {
 
         datePicker.addOnPositiveButtonClickListener(selection -> {
             TimeZone timeZone = TimeZone.getTimeZone("UTC");
-            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy", Locale.US);
+            SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yy", Locale.US);
             sdf.setTimeZone(timeZone);
             String formattedDate = sdf.format(new Date(selection));
             dateEditText.setText(formattedDate);
@@ -152,6 +153,11 @@ public class VacationDetails extends AppCompatActivity {
         if (itemId == R.id.action_set_alerts) {
             scheduleToastAlerts();
             return true;
+        }
+        if (itemId == R.id.action_delete_vacation) {
+            deleteVacation();
+            return true;
+
         }
 
         if (itemId == R.id.action_share_vacation) {
@@ -180,7 +186,7 @@ public class VacationDetails extends AppCompatActivity {
             return;
         }
 
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy", Locale.US);
+        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yy", Locale.US);
         Date startDate = null;
         Date endDate = null;
 
@@ -189,7 +195,7 @@ public class VacationDetails extends AppCompatActivity {
             endDate = sdf.parse(updatedEndDate);
         } catch (ParseException e) {
             e.printStackTrace();
-            Toast.makeText(this, "Invalid date format. Please use MM/DD/YY.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Invalid date format. Please use MM-DD-YY.", Toast.LENGTH_SHORT).show();
             return; // Stop the save if dates are invalid
         }
 
@@ -210,7 +216,7 @@ public class VacationDetails extends AppCompatActivity {
         String vacationName = editName.getText().toString();
         String startDateStr = editStartDate.getText().toString();
         String endDateStr = editEndDate.getText().toString();
-        String format = "MM/dd/yy";
+        String format = "MM-dd-yy";
         SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
 
         if (startDateStr.isEmpty() || endDateStr.isEmpty()) {
@@ -293,5 +299,16 @@ public class VacationDetails extends AppCompatActivity {
         // 4. Launch the Android share dialog
         startActivity(Intent.createChooser(sharingIntent, "Share via"));
     }
-}
 
+    private void deleteVacation() {
+        mDetailViewModel.getExcursionCountForVacation(vacationId).observe(this, excursions -> {
+            if (excursions == null || excursions.isEmpty()) {
+                mDetailViewModel.delete(currentVacation);
+                Toast.makeText(this, "Vacation deleted.", Toast.LENGTH_SHORT).show();
+                finish();
+            } else {
+                Toast.makeText(this, "Cannot delete vacation with attached excursions.", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+}

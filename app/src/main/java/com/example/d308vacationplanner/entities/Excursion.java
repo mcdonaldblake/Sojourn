@@ -1,19 +1,27 @@
 package com.example.d308vacationplanner.entities;
 
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "excursions")
+@Entity(tableName = "excursions",
+        foreignKeys = @ForeignKey(
+                entity = Vacation.class,
+                parentColumns = "vacationID",
+                childColumns = "vacationID",
+                onDelete = ForeignKey.RESTRICT))
 public class Excursion {
 
     @PrimaryKey(autoGenerate = true)
     private int excursionID;
     private String excursionName;
     private int vacationID;
+    private String excursionDate;
 
-    public Excursion(int excursionID, String excursionName, int vacationID) {
+    public Excursion(int excursionID, String excursionName, String excursionDate, int vacationID) {
         this.excursionID = excursionID;
         this.excursionName = excursionName;
+        this.excursionDate = excursionDate;
 
         this.vacationID = vacationID;
     }
@@ -32,6 +40,14 @@ public class Excursion {
 
     public void setExcursionName(String excursionName) {
         this.excursionName = excursionName;
+    }
+
+    public String getExcursionDate() {
+        return excursionDate;
+    }
+
+    public void setExcursionDate(String excursionDate) {
+        this.excursionDate = excursionDate;
     }
 
     public int getVacationID() {

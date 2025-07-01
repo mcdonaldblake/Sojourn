@@ -106,7 +106,7 @@ public class AddEditVacationActivity extends AppCompatActivity {
             return;
         }
 
-        SimpleDateFormat sdf = new SimpleDateFormat("MM-DD-YY", Locale.US);
+        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yy", Locale.US);
         Date startDate = null;
         Date endDate = null;
 

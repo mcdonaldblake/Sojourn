@@ -1,36 +1,22 @@
 package com.example.d308vacationplanner.UI;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.d308vacationplanner.R;
-import com.example.d308vacationplanner.entities.Excursion;
 import com.example.d308vacationplanner.entities.Vacation;
 import com.example.d308vacationplanner.viewModel.DetailViewModel;
-import com.example.d308vacationplanner.viewModel.VacationViewModel;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -39,11 +25,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class VacationDetails extends AppCompatActivity {
+public class EditVacation extends AppCompatActivity {
     private DetailViewModel mDetailViewModel;
     private ExcursionAdapter excursionAdapter;
 
@@ -60,7 +45,7 @@ public class VacationDetails extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_vacation_details);
+        setContentView(R.layout.activity_vacation_edit);
 
         mDetailViewModel = new ViewModelProvider(this).get(DetailViewModel.class);
 
@@ -91,30 +76,34 @@ public class VacationDetails extends AppCompatActivity {
                 editStartDate.setText(vacation.getStartDate());
                 editEndDate.setText(vacation.getEndDate());
                 getSupportActionBar().setTitle(vacation.getVacationName());
-            }
+
+
+                // --- Setup RecyclerView ---
+                RecyclerView recyclerView = findViewById(R.id.excursionRecyclerView);
+                excursionAdapter = new ExcursionAdapter(this, currentVacation);
+                recyclerView.setAdapter(excursionAdapter);
+                recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+                // Observe the excursion list from the ViewModel
+                mDetailViewModel.getAssociatedExcursions(vacationId).observe(this, excursions -> {
+                    excursionAdapter.setExcursions(excursions);
         });
+                }
 
 
         editStartDate.setOnClickListener(v -> showDatePicker(editStartDate, "Select Start Date"));
         editEndDate.setOnClickListener(v -> showDatePicker(editEndDate, "Select End Date"));
 
-        // --- Setup RecyclerView ---
-        RecyclerView recyclerView = findViewById(R.id.excursionRecyclerView);
-        excursionAdapter = new ExcursionAdapter(this);
-        recyclerView.setAdapter(excursionAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        // Observe the excursion list from the ViewModel
-        mDetailViewModel.getAssociatedExcursions(vacationId).observe(this, excursions -> {
-            excursionAdapter.setExcursions(excursions);
         });
 
         // --- Setup Floating Action Button ---
         FloatingActionButton fab = findViewById(R.id.floatingActionButton);
         fab.setOnClickListener(v -> {
             // This button on this screen is for adding a NEW excursion
-            Intent intent = new Intent(VacationDetails.this, AddEditExcursionActivity.class);
+            Intent intent = new Intent(EditVacation.this, AddExcursionActivity.class);
             intent.putExtra("vacationId", vacationId);
+            intent.putExtra("vacationStartDate", currentVacation.getStartDate());
+            intent.putExtra("vacationEndDate", currentVacation.getEndDate());
             startActivity(intent);
         });
     }
@@ -127,7 +116,7 @@ public class VacationDetails extends AppCompatActivity {
 
         datePicker.addOnPositiveButtonClickListener(selection -> {
             TimeZone timeZone = TimeZone.getTimeZone("UTC");
-            SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yy", Locale.US);
+            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy", Locale.US);
             sdf.setTimeZone(timeZone);
             String formattedDate = sdf.format(new Date(selection));
             dateEditText.setText(formattedDate);
@@ -174,7 +163,7 @@ public class VacationDetails extends AppCompatActivity {
     }
 
     private void saveChanges() {
-        // ✅ FIX: Read the text from all the updated fields
+
         String updatedName = editName.getText().toString().trim();
         String updatedHotel = editHotel.getText().toString().trim();
         String updatedStartDate = editStartDate.getText().toString().trim();
@@ -186,7 +175,7 @@ public class VacationDetails extends AppCompatActivity {
             return;
         }
 
-        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yy", Locale.US);
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy", Locale.US);
         Date startDate = null;
         Date endDate = null;
 
@@ -216,7 +205,7 @@ public class VacationDetails extends AppCompatActivity {
         String vacationName = editName.getText().toString();
         String startDateStr = editStartDate.getText().toString();
         String endDateStr = editEndDate.getText().toString();
-        String format = "MM-dd-yy";
+        String format = "MM/dd/yy";
         SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
 
         if (startDateStr.isEmpty() || endDateStr.isEmpty()) {
@@ -252,13 +241,13 @@ public class VacationDetails extends AppCompatActivity {
 
         if (isSameDay(startDate, today)) {
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                Toast.makeText(VacationDetails.this, "Your vacation, '" + vacationName + "', begins today!", Toast.LENGTH_LONG).show();
+                Toast.makeText(EditVacation.this, "Your vacation, '" + vacationName + "', begins today!", Toast.LENGTH_LONG).show();
             }, 2000);
         }
 
         if (isSameDay(endDate, today)) {
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                Toast.makeText(VacationDetails.this, "Your vacation, '" + vacationName + "', ends today!", Toast.LENGTH_LONG).show();
+                Toast.makeText(EditVacation.this, "Your vacation, '" + vacationName + "', ends today!", Toast.LENGTH_LONG).show();
             }, 4000);
         }
     }

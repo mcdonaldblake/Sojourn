@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class AddEditVacationActivity extends AppCompatActivity {
+public class AddVacationActivity extends AppCompatActivity {
 
     private VacationViewModel mVacationViewModel;
 
@@ -33,7 +33,7 @@ public class AddEditVacationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_edit_vacation);
+        setContentView(R.layout.activity_add_vacation);
 
         mVacationViewModel = new ViewModelProvider(this).get(VacationViewModel.class);
 
@@ -60,7 +60,7 @@ public class AddEditVacationActivity extends AppCompatActivity {
 
         datePicker.addOnPositiveButtonClickListener(selection -> {
             TimeZone timeZone = TimeZone.getTimeZone("UTC");
-            SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yy", Locale.US);
+            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy", Locale.US);
             sdf.setTimeZone(timeZone);
 
             String formattedDate = sdf.format(new Date(selection));
@@ -106,7 +106,7 @@ public class AddEditVacationActivity extends AppCompatActivity {
             return;
         }
 
-        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yy", Locale.US);
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy", Locale.US);
         Date startDate = null;
         Date endDate = null;
 
@@ -115,7 +115,7 @@ public class AddEditVacationActivity extends AppCompatActivity {
             endDate = sdf.parse(updatedEndDate);
         } catch (ParseException e) {
             e.printStackTrace();
-            Toast.makeText(this, "Invalid date format. Please use MM-DD-YY.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Invalid date format. Please use MM/dd/yy.", Toast.LENGTH_SHORT).show();
             return; // Stop the save if dates are invalid
         }
 

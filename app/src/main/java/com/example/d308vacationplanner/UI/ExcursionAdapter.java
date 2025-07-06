@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.d308vacationplanner.R;
 import com.example.d308vacationplanner.entities.Excursion;
+import com.example.d308vacationplanner.entities.Vacation;
 
 import java.util.List;
 
@@ -20,11 +21,13 @@ public class ExcursionAdapter extends RecyclerView.Adapter<ExcursionAdapter.Excu
     private List<Excursion> mExcursion;
     private final Context context;
     private final LayoutInflater mInflater;
+    private final Vacation vacation;
 
     class ExcursionViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView excursionItemView;
         private final TextView excursionItemView2;
+
 
 
         private ExcursionViewHolder(View itemView) {
@@ -39,11 +42,13 @@ public class ExcursionAdapter extends RecyclerView.Adapter<ExcursionAdapter.Excu
 
                     if (mExcursion != null && position != RecyclerView.NO_POSITION) {
                         final Excursion current = mExcursion.get(position);
-                        Intent intent = new Intent(context, ExcursionDetails.class);
+                        Intent intent = new Intent(context, EditExcursion.class);
                         intent.putExtra("id", current.getExcursionID());
                         intent.putExtra("name", current.getExcursionName());
-                        intent.putExtra("prodId", current.getVacationID());
+                        intent.putExtra("vacationId", current.getVacationID());
                         intent.putExtra("date", current.getExcursionDate());
+                        intent.putExtra("vacationStartDate", vacation.getStartDate()); // Must be in MM/dd/yy format
+                        intent.putExtra("vacationEndDate", vacation.getEndDate());
 
                         context.startActivity(intent);
                     }
@@ -53,11 +58,12 @@ public class ExcursionAdapter extends RecyclerView.Adapter<ExcursionAdapter.Excu
 
         }
     }
-
-    public ExcursionAdapter(Context context) {
+    public ExcursionAdapter(Context context, Vacation vacation) {
         mInflater = LayoutInflater.from(context);
         this.context = context;
+        this.vacation = vacation;
     }
+
     @NonNull
     @Override
     public ExcursionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

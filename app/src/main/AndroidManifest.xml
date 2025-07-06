@@ -13,22 +13,22 @@
         android:theme="@style/Theme.D308VacationPlanner"
         tools:targetApi="31">
         <activity
-            android:name=".UI.ExcursionDetails"
+            android:name=".UI.EditExcursion"
             android:label="Excursion Details"
-            android:parentActivityName=".UI.VacationDetails"
+            android:parentActivityName=".UI.EditVacation"
             android:exported="false" />
-        <activity android:name=".UI.AddEditExcursionActivity"
+        <activity android:name=".UI.AddExcursionActivity"
             android:label="Add/Edit Excursion"
-            android:parentActivityName=".UI.VacationDetails"
+            android:parentActivityName=".UI.EditVacation"
             android:exported="false"/>
 
         <activity
-            android:name=".UI.AddEditVacationActivity"
+            android:name=".UI.AddVacationActivity"
             android:label="Add/Edit Vacation"
             android:parentActivityName=".UI.VacationList"
             android:exported="false" />
         <activity
-            android:name=".UI.VacationDetails"
+            android:name=".UI.EditVacation"
             android:exported="false"
             android:label="Vacation Details"
             android:parentActivityName=".UI.VacationList" />
@@ -47,13 +47,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <receiver
-            android:name=".UI.NotificationReceiver"
-            android:enabled="true"
-            android:exported="true" >
-        </receiver>
-
+        
     </application>
 
 </manifest>

@@ -5,8 +5,9 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".UI.ExcursionDetails">
+    tools:context=".UI.AddExcursionActivity">
 
+    <!-- Include the Toolbar at the top -->
     <include
         android:id="@+id/my_toolbar"
         layout="@layout/toolbar_layout"
@@ -14,44 +15,52 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:orientation="vertical"
-        android:padding="16dp"
         app:layout_constraintTop_toBottomOf="@id/my_toolbar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- ✅ FIX: Using TextInputLayout and TextInputEditText for editing -->
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <!-- Excursion Title Input -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Excursion Title"
+                android:textAppearance="?attr/textAppearanceTitleMedium" />
+
+            <EditText
                 android:id="@+id/edit_text_excursion_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Excursion Title" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:hint="e.g., Snorkeling Adventure"
+                android:inputType="textCapWords"/>
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp">
+            <!-- Excursion Date Input -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Excursion Date"
+                android:layout_marginTop="16dp"
+                android:textAppearance="?attr/textAppearanceTitleMedium" />
 
-            <com.google.android.material.textfield.TextInputEditText
+            <EditText
                 android:id="@+id/edit_text_excursion_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Excursion Date"
+                android:hint="Select a Date"
                 android:focusable="false"
-                android:clickable="true" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:clickable="true"
+                android:drawableEnd="@drawable/ic_calendar" />
 
-    </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

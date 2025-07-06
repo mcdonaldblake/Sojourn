@@ -5,6 +5,5 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
 android:id="@+id/my_toolbar"
 android:layout_width="match_parent"
 android:layout_height="?attr/actionBarSize">
-<!-- All specific color, theme, and style attributes have been removed -->
-<!-- It will now correctly use the styles from your themes.xml -->
+
 </androidx.appcompat.widget.Toolbar>

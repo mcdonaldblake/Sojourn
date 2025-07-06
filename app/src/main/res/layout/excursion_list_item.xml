@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ✅ Using a CardView as the root element gives each item a nice container with elevation and rounded corners. -->
+
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -7,7 +7,7 @@
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp"
     app:cardUseCompatPadding="true">
-    <!-- ✅ app:cardUseCompatPadding adds some default spacing, and we can add more with layout_marginBottom -->
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,7 +24,6 @@
             android:textAppearance="?attr/textAppearanceListItem"
             android:textStyle="bold" />
 
-        <!-- ✅ ADDED: A new TextView for the date, with smaller print -->
         <TextView
             android:id="@+id/textView_excursion_date"
             android:layout_width="wrap_content"

@@ -15,29 +15,35 @@ import com.example.d308vacationplanner.entities.Excursion;
 import com.example.d308vacationplanner.viewModel.DetailViewModel;
 import com.google.android.material.datepicker.MaterialDatePicker;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class AddEditExcursionActivity extends AppCompatActivity {
+public class AddExcursionActivity extends AppCompatActivity {
 
     private DetailViewModel mDetailViewModel;
 
     private EditText mEditExcursionTitle;
     private EditText mEditExcursionDate;
     private int vacationId;
+    private String vacationStartDateStr;
+    private String vacationEndDateStr;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_edit_excursion);
+        setContentView(R.layout.activity_add_excursion);
 
         // Initialize the ViewModel
         mDetailViewModel = new ViewModelProvider(this).get(DetailViewModel.class);
 
         // Get the vacationId passed from the VacationDetails screen
         vacationId = getIntent().getIntExtra("vacationId", -1);
+        vacationStartDateStr = getIntent().getStringExtra("vacationStartDate");
+        vacationEndDateStr = getIntent().getStringExtra("vacationEndDate");
 
         // Setup Toolbar
         Toolbar toolbar = findViewById(R.id.my_toolbar);
@@ -85,30 +91,44 @@ public class AddEditExcursionActivity extends AppCompatActivity {
         if (item.getItemId() == android.R.id.home) {
             this.finish();
             return true;
-    }
+        }
 
         return super.onOptionsItemSelected(item);
     }
 
     private void saveExcursion() {
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy", Locale.US);
         String title = mEditExcursionTitle.getText().toString().trim();
-        String date = mEditExcursionDate.getText().toString().trim();
+        String dateStr = mEditExcursionDate.getText().toString().trim();
 
-        if (title.isEmpty() || date.isEmpty()) {
+        if (title.isEmpty() || dateStr.isEmpty()) {
             Toast.makeText(this, "Please fill out all fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (vacationId == -1) {
-            Toast.makeText(this, "Error: Could not associate excursion with a vacation.", Toast.LENGTH_SHORT).show();
-            return;
+        try {
+
+            Date excursionDate = sdf.parse(dateStr);
+            Date vacationStartDate = sdf.parse(vacationStartDateStr);
+            Date vacationEndDate = sdf.parse(vacationEndDateStr);
+
+            if (excursionDate.before(vacationStartDate) || excursionDate.after(vacationEndDate)) {
+                Toast.makeText(this, "Excursion Date must be within Vacation start and end data", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            if (vacationId == -1) {
+                Toast.makeText(this, "Error: Could not associate excursion with a vacation.", Toast.LENGTH_SHORT).show();
+                return;
+
+            }
+            Excursion newExcursion = new Excursion(0, title, dateStr, vacationId);
+            mDetailViewModel.insert(newExcursion);
+            Toast.makeText(this, "Excursion saved!", Toast.LENGTH_SHORT).show();
+
+            finish(); // Return to previous screen
+        } catch (ParseException e) {
+            Toast.makeText(this, "Invalid Date Format. Use MM/DD/YY", Toast.LENGTH_LONG).show();
         }
-
-        // Create a new excursion object, linking it with the correct vacationId
-        Excursion newExcursion = new Excursion(0, title, date, vacationId); // Price can be added later if needed
-        mDetailViewModel.insert(newExcursion);
-
-        Toast.makeText(this, "Excursion saved!", Toast.LENGTH_SHORT).show();
-        finish(); // Go back to the details screen
     }
 }

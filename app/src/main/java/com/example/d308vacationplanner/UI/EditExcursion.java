@@ -1,29 +1,18 @@
 package com.example.d308vacationplanner.UI;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.d308vacationplanner.R;
-import com.example.d308vacationplanner.database.Repository;
 import com.example.d308vacationplanner.entities.Excursion;
 import com.example.d308vacationplanner.viewModel.DetailViewModel;
 import com.google.android.material.datepicker.MaterialDatePicker;
@@ -36,29 +25,28 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class ExcursionDetails extends AppCompatActivity {
+public class EditExcursion extends AppCompatActivity {
 
     private DetailViewModel mDetailViewModel;
 
     private int excursionId;
     private int vacationId;
 
-    // Editable fields from the layout
+
     private TextInputEditText editExcursionTitle;
     private TextInputEditText editExcursionDate;
 
-    // Dates from the parent vacation, needed for validation
     private String vacationStartDateStr;
     private String vacationEndDateStr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_excursion_details);
+        setContentView(R.layout.activity_excursion_edit);
 
         mDetailViewModel = new ViewModelProvider(this).get(DetailViewModel.class);
 
-        // Get all data from the intent
+
         excursionId = getIntent().getIntExtra("id", -1);
         String excursionName = getIntent().getStringExtra("name");
         String excursionDate = getIntent().getStringExtra("date");
@@ -66,7 +54,8 @@ public class ExcursionDetails extends AppCompatActivity {
         vacationStartDateStr = getIntent().getStringExtra("vacationStartDate");
         vacationEndDateStr = getIntent().getStringExtra("vacationEndDate");
 
-        // Setup Toolbar
+
+
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
@@ -74,13 +63,13 @@ public class ExcursionDetails extends AppCompatActivity {
             getSupportActionBar().setTitle(excursionName);
         }
 
-        // Find and populate the editable text fields
+
         editExcursionTitle = findViewById(R.id.edit_text_excursion_title);
         editExcursionDate = findViewById(R.id.edit_text_excursion_date);
         editExcursionTitle.setText(excursionName);
         editExcursionDate.setText(excursionDate);
 
-        // ✅ FIX: Set listener to show the date picker on the correct UI element
+
         editExcursionDate.setOnClickListener(v -> showDatePicker(editExcursionDate, "Select Excursion Date"));
     }
 
@@ -122,7 +111,7 @@ public class ExcursionDetails extends AppCompatActivity {
             return true;
         }
         if (itemId == R.id.action_set_alerts_excursion) {
-            // ✅ FIX: This now calls our simple Toast alert method
+
             setToastAlert();
             return true;
         }
@@ -137,23 +126,34 @@ public class ExcursionDetails extends AppCompatActivity {
         String title = editExcursionTitle.getText().toString().trim();
         String dateStr = editExcursionDate.getText().toString().trim();
 
-        // ✅ REQUIREMENT B5.e: Validate that the excursion date is within the vacation's date range
+
+        if (title.isEmpty() || dateStr.isEmpty()) {
+            Toast.makeText(this, "Please fill out all fields.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy", Locale.US);
         try {
             Date excursionDate = sdf.parse(dateStr);
             Date vacationStartDate = sdf.parse(vacationStartDateStr);
             Date vacationEndDate = sdf.parse(vacationEndDateStr);
 
+            if (excursionDate == null) {
+                Toast.makeText(this, "Invalid date input.", Toast.LENGTH_LONG).show();
+                return;
+            }
+
             if (excursionDate.before(vacationStartDate) || excursionDate.after(vacationEndDate)) {
                 Toast.makeText(this, "Excursion date must be within the vacation's start and end dates.", Toast.LENGTH_LONG).show();
-                return; // Stop the save if the date is out of range
+                return;
             }
+
         } catch (ParseException e) {
-            Toast.makeText(this, "Invalid date format. Please re-select dates.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Invalid date format. Please use MM/dd/yy.", Toast.LENGTH_LONG).show();
             return;
         }
 
-        // This object is used for both updating an existing excursion and saving a new one
+        // Update or insert the excursion
         Excursion excursion = new Excursion(excursionId, title, dateStr, vacationId);
         if (excursionId == -1) {
             mDetailViewModel.insert(excursion);
@@ -165,16 +165,17 @@ public class ExcursionDetails extends AppCompatActivity {
         finish();
     }
 
+
     private void deleteExcursion() {
 
         String title = editExcursionTitle.getText().toString().trim();
         String dateStr = editExcursionDate.getText().toString().trim();
-        // We only need the ID to delete, but creating the object is safe.
         Excursion excursion = new Excursion(excursionId, title, dateStr, vacationId);
         mDetailViewModel.deleteExcursionById(excursionId);
         Toast.makeText(this, "Excursion deleted.", Toast.LENGTH_SHORT).show();
         finish();
     }
+
     private void shareExcursion() {
         String title = editExcursionTitle.getText().toString();
         String date = editExcursionDate.getText().toString();
@@ -185,18 +186,66 @@ public class ExcursionDetails extends AppCompatActivity {
         startActivity(Intent.createChooser(sharingIntent, "Share via"));
     }
 
-    /**
-     * ✅ FIX: Replaced the complex alarm logic with a simple Toast message.
-     * This is the functionality you requested.
-     */
+    private boolean isSameDay(Date date1, Date date2) {
+        if (date1 == null || date2 == null) {
+            return false;
+        }
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(date1);
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(date2);
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
+    }
+
+
     private void setToastAlert() {
         String title = editExcursionTitle.getText().toString();
-        String date = editExcursionDate.getText().toString();
+        String dateStr = editExcursionDate.getText().toString();
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy", Locale.US);
 
-        if (date.isEmpty()) {
+        if (dateStr.isEmpty()) {
             Toast.makeText(this, "Please select a date to set an alert.", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Alert set for '" + title + "' on " + date, Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        try {
+            Date excursionDate = sdf.parse(dateStr);
+            Date vacationStartDate = sdf.parse(vacationStartDateStr);
+            Date vacationEndDate = sdf.parse(vacationEndDateStr);
+
+            if (excursionDate.before(vacationStartDate) || excursionDate.after(vacationEndDate)) {
+                Toast.makeText(this, "Excursion date must be within the vacation's start and end dates.", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+
+            // Normalize today
+            Calendar todayCal = Calendar.getInstance();
+            todayCal.set(Calendar.HOUR_OF_DAY, 0);
+            todayCal.set(Calendar.MINUTE, 0);
+            todayCal.set(Calendar.SECOND, 0);
+            todayCal.set(Calendar.MILLISECOND, 0);
+            Date today = todayCal.getTime();
+
+            Toast.makeText(this, "Alerts have been set.", Toast.LENGTH_SHORT).show();
+
+            if (isSameDay(excursionDate, today)) {
+
+                Toast.makeText(this, "Your excursion '" + title + "' is today!", Toast.LENGTH_LONG).show();
+            } else if (excursionDate.after(today)) {
+
+                long delayMillis = excursionDate.getTime() - today.getTime();
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    Toast.makeText(this, "Reminder: Your excursion '" + title + "' is today!", Toast.LENGTH_LONG).show();
+                }, delayMillis);
+                Toast.makeText(this, "Alert set for excursion on " + dateStr, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "The excursion date is in the past. No alert set.", Toast.LENGTH_SHORT).show();
+            }
+
+        } catch (ParseException e) {
+            Toast.makeText(this, "Invalid date format. Please use MM/dd/yy.", Toast.LENGTH_SHORT).show();
         }
     }
 }

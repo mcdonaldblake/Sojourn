@@ -19,7 +19,7 @@ public class Repository {
     static final ExecutorService databaseExecutor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
     public Repository(Application application) {
-        // Use your actual database class name here
+
         VacationDatabaseBuilder db = VacationDatabaseBuilder.getDatabase(application);
         mExcursionDAO = db.excursionDAO();
         mVacationDAO = db.vacationDAO();
@@ -60,12 +60,12 @@ public class Repository {
 
     public void update(Excursion excursion) {
         databaseExecutor.execute(() ->
-                mExcursionDAO.insert(excursion));
+                mExcursionDAO.update(excursion));
     }
 
     public void delete(Excursion excursion) {
         databaseExecutor.execute(() ->
-                mExcursionDAO.insert(excursion));
+                mExcursionDAO.delete(excursion));
     }
 
     public LiveData<List<Excursion>> getAllExcursions(int vacationId) {

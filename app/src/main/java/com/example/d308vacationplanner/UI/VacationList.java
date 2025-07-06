@@ -2,7 +2,6 @@ package com.example.d308vacationplanner.UI;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -21,8 +20,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.d308vacationplanner.R;
-import com.example.d308vacationplanner.database.Repository;
-import com.example.d308vacationplanner.entities.Excursion;
 import com.example.d308vacationplanner.entities.Vacation;
 import com.example.d308vacationplanner.viewModel.VacationViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -84,7 +81,7 @@ public class VacationList extends AppCompatActivity {
         });
 
         View.OnClickListener addVacationListener = view -> {
-            Intent intent = new Intent(VacationList.this, AddEditVacationActivity.class);
+            Intent intent = new Intent(VacationList.this, AddVacationActivity.class);
             startActivity(intent);
         };
 

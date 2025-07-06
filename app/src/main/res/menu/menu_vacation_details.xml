@@ -2,7 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- The "Save" item to save any edits made to the vacation -->
     <item
         android:id="@+id/action_save_vacation"
         android:title="Save Changes"

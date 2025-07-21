@@ -77,7 +77,6 @@ public class AddExcursionActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Use the same save menu as the AddEditVacationActivity
         getMenuInflater().inflate(R.menu.menu_add_vacation, menu);
         return true;
     }

@@ -5,7 +5,6 @@ plugins {
     alias(libs.plugins.android.application)
 }
 
-// ✅ 2. The 'android' block contains all your app's configuration
 android {
     namespace 'com.example.d308vacationplanner'
     compileSdk 34
@@ -32,7 +31,7 @@ android {
     }
 }
 
-// ✅ 3. The 'dependencies' block uses the correct Groovy syntax (no parentheses)
+
 dependencies {
     implementation libs.androidx.appcompat
     implementation libs.androidx.material

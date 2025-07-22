@@ -2,9 +2,12 @@ package com.example.d308vacationplanner.database;// This should be the full code
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.example.d308vacationplanner.dao.ExcursionDAO;
 import com.example.d308vacationplanner.dao.VacationDAO;
@@ -27,13 +30,20 @@ public abstract class VacationDatabaseBuilder extends RoomDatabase {
     public static final ExecutorService databaseWriteExecutor =
             Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
+    static final Migration Migration_2_3 = new Migration(2, 3) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase db) {
+            db.execSQL("ALTER TABLE vacations ADD COLUMN cost REAL NOT NULL DEFAULT 0");
+            db.execSQL("ALTER TABLE excursions ADD COLUMN cost REAL NOT NULL DEFAULT 0");
+        }
+    };
     public static VacationDatabaseBuilder getDatabase(final Context context) {
         if (INSTANCE == null) {
             synchronized (VacationDatabaseBuilder.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                                     VacationDatabaseBuilder.class, "vacation_database.db")
-                            .fallbackToDestructiveMigration()
+                            .addMigrations(Migration_2_3)
                             .build();
                 }
             }

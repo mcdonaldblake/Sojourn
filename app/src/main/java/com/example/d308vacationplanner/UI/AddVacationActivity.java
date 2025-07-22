@@ -29,6 +29,7 @@ public class AddVacationActivity extends AppCompatActivity {
     private EditText mEditHotel;
     private EditText mEditStartDate;
     private EditText mEditEndDate;
+    private EditText costEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +47,7 @@ public class AddVacationActivity extends AppCompatActivity {
         mEditHotel = findViewById(R.id.edit_text_hotel);
         mEditStartDate = findViewById(R.id.edit_text_start_date);
         mEditEndDate = findViewById(R.id.edit_text_end_date);
+        costEditText = findViewById(R.id.edit_text_cost);
 
         mEditStartDate.setOnClickListener(v -> showDatePicker(mEditStartDate, "Select Start Date"));
         mEditEndDate.setOnClickListener(view -> showDatePicker(mEditEndDate, "Select End Date"));
@@ -100,6 +102,7 @@ public class AddVacationActivity extends AppCompatActivity {
         String updatedStartDate = mEditStartDate.getText().toString().trim();
         String updatedEndDate = mEditEndDate.getText().toString().trim();
 
+
         // Basic validation to make sure fields are not empty
         if (updatedName.isEmpty() || updatedHotel.isEmpty() || updatedStartDate.isEmpty() || updatedEndDate.isEmpty()) {
             Toast.makeText(this, "Please fill out all fields", Toast.LENGTH_SHORT).show();
@@ -125,7 +128,13 @@ public class AddVacationActivity extends AppCompatActivity {
         }
         // Create a new Vacation object with an ID of 0.
         // Room will auto-generate the real ID.
-        Vacation newVacation = new Vacation(0, updatedName, updatedHotel, updatedStartDate, updatedEndDate); // Using 0.0 for price temporarily
+
+        double cost = 0d;
+        try {
+            cost = Double.parseDouble(costEditText.getText().toString());
+        } catch (NumberFormatException e) {
+        }
+        Vacation newVacation = new Vacation(0, updatedName, updatedHotel, updatedStartDate, updatedEndDate, cost); // Using 0.0 for price temporarily
         mVacationViewModel.insert(newVacation);
 
         Toast.makeText(this, "Vacation saved!", Toast.LENGTH_SHORT).show();

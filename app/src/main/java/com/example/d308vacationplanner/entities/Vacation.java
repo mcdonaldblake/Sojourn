@@ -6,20 +6,22 @@ import androidx.room.PrimaryKey;
 import java.util.Date;
 
 @Entity(tableName = "vacations")
-public class Vacation {
+public class Vacation implements Costable{
     @PrimaryKey(autoGenerate = true)
     private int vacationID;
     private String vacationName;
     private String hotel;
     private String startDate;
     private String endDate;
+    private double cost;
 
-    public Vacation(int vacationID, String vacationName, String hotel, String startDate, String endDate) {
+    public Vacation(int vacationID, String vacationName, String hotel, String startDate, String endDate, double cost) {
         this.vacationID = vacationID;
         this.vacationName = vacationName;
         this.hotel = hotel;
         this.startDate = startDate;
         this.endDate = endDate;
+        setCost(cost);
     }
 
     public int getVacationID() {
@@ -46,5 +48,14 @@ public class Vacation {
 
     public void setEndDate(String endDate) {this.endDate = endDate;}
     public String getEndDate(){return endDate;}
+
+    public double getCost() {
+        return cost;
+    }
+
+    public void setCost(double cost) {
+        if (cost < 0) throw new IllegalArgumentException("Cost can not be negative");
+        this.cost = cost;
+    }
 
 }

@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -53,6 +54,7 @@ public class EditExcursion extends AppCompatActivity {
         vacationId = getIntent().getIntExtra("vacationId", -1);
         vacationStartDateStr = getIntent().getStringExtra("vacationStartDate");
         vacationEndDateStr = getIntent().getStringExtra("vacationEndDate");
+
 
 
 
@@ -153,7 +155,7 @@ public class EditExcursion extends AppCompatActivity {
             return;
         }
 
-        // Update or insert the excursion
+
         Excursion excursion = new Excursion(excursionId, title, dateStr, vacationId);
         if (excursionId == -1) {
             mDetailViewModel.insert(excursion);

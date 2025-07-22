@@ -87,6 +87,19 @@
                 android:clickable="true"
                 android:drawableEnd="@drawable/ic_calendar" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Costs"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"/>
+
+            <EditText
+                android:id="@+id/edit_text_cost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="$500"
+                android:inputType="numberDecimal"/>
+
 
 
 

@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.TimeZone;
 
 public class EditExcursion extends AppCompatActivity {
@@ -32,10 +33,12 @@ public class EditExcursion extends AppCompatActivity {
 
     private int excursionId;
     private int vacationId;
+    private double excursionCost = 0.0;
 
 
     private TextInputEditText editExcursionTitle;
     private TextInputEditText editExcursionDate;
+    private TextInputEditText editExcursionCost;
 
     private String vacationStartDateStr;
     private String vacationEndDateStr;
@@ -55,6 +58,14 @@ public class EditExcursion extends AppCompatActivity {
         vacationStartDateStr = getIntent().getStringExtra("vacationStartDate");
         vacationEndDateStr = getIntent().getStringExtra("vacationEndDate");
 
+        String costExtra = getIntent().getStringExtra("excursionCost");
+        if (costExtra != null && !costExtra.isEmpty()) {
+            try {
+                excursionCost = Double.parseDouble(costExtra);
+            } catch (NumberFormatException ignored) {
+            }
+        }
+
 
 
 
@@ -68,8 +79,12 @@ public class EditExcursion extends AppCompatActivity {
 
         editExcursionTitle = findViewById(R.id.edit_text_excursion_title);
         editExcursionDate = findViewById(R.id.edit_text_excursion_date);
+        editExcursionCost = findViewById(R.id.edit_text_excursion_cost);
+
         editExcursionTitle.setText(excursionName);
         editExcursionDate.setText(excursionDate);
+        editExcursionCost.setText(String.valueOf(excursionCost));
+
 
 
         editExcursionDate.setOnClickListener(v -> showDatePicker(editExcursionDate, "Select Excursion Date"));
@@ -127,6 +142,7 @@ public class EditExcursion extends AppCompatActivity {
     private void saveChanges() {
         String title = editExcursionTitle.getText().toString().trim();
         String dateStr = editExcursionDate.getText().toString().trim();
+        String costStr = editExcursionCost.getText().toString().trim();
 
 
         if (title.isEmpty() || dateStr.isEmpty()) {
@@ -155,8 +171,13 @@ public class EditExcursion extends AppCompatActivity {
             return;
         }
 
+        double cost = 0.0;
+        try {
+            cost = Double.parseDouble(costStr);
+        } catch (NumberFormatException ignored) {
+        }
 
-        Excursion excursion = new Excursion(excursionId, title, dateStr, vacationId);
+        Excursion excursion = new Excursion(excursionId, title, dateStr, vacationId, cost);
         if (excursionId == -1) {
             mDetailViewModel.insert(excursion);
             Toast.makeText(this, "Excursion created.", Toast.LENGTH_SHORT).show();
@@ -172,7 +193,8 @@ public class EditExcursion extends AppCompatActivity {
 
         String title = editExcursionTitle.getText().toString().trim();
         String dateStr = editExcursionDate.getText().toString().trim();
-        Excursion excursion = new Excursion(excursionId, title, dateStr, vacationId);
+
+        Excursion excursion = new Excursion(excursionId, title, dateStr, vacationId, excursionCost);
         mDetailViewModel.deleteExcursionById(excursionId);
         Toast.makeText(this, "Excursion deleted.", Toast.LENGTH_SHORT).show();
         finish();

@@ -41,6 +41,7 @@ public class EditVacation extends AppCompatActivity {
     private TextInputEditText editHotel;
     private TextInputEditText editStartDate;
     private TextInputEditText editEndDate;
+    private TextInputEditText editCost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +67,7 @@ public class EditVacation extends AppCompatActivity {
         editHotel = findViewById(R.id.hotel_text);
         editStartDate = findViewById(R.id.edit_text_start_date);
         editEndDate = findViewById(R.id.edit_text_end_date);
+        editCost = findViewById(R.id.edit_text_cost);
 
         mDetailViewModel.getVacationById(vacationId).observe(this, vacation -> {
             if (vacation != null) {
@@ -75,6 +77,7 @@ public class EditVacation extends AppCompatActivity {
                 editHotel.setText(vacation.getHotel());
                 editStartDate.setText(vacation.getStartDate());
                 editEndDate.setText(vacation.getEndDate());
+                editCost.setText(String.valueOf(vacation.getCost()));
                 getSupportActionBar().setTitle(vacation.getVacationName());
 
 
@@ -168,6 +171,7 @@ public class EditVacation extends AppCompatActivity {
         String updatedHotel = editHotel.getText().toString().trim();
         String updatedStartDate = editStartDate.getText().toString().trim();
         String updatedEndDate = editEndDate.getText().toString().trim();
+        String updatedCostStr = editCost.getText().toString().trim();
 
 
         if (updatedName.isEmpty() || updatedHotel.isEmpty()) {
@@ -193,8 +197,13 @@ public class EditVacation extends AppCompatActivity {
             return; // Stop the save if the end date is before the start date
         }
 
+        double updatedCost = 0.0;
+        try {
+            updatedCost = Double.parseDouble(updatedCostStr);
+        } catch (NumberFormatException ignored) {
+        }
         // Create the updated Vacation object with all the new data
-        Vacation updatedVacation = new Vacation(vacationId, updatedName, updatedHotel, updatedStartDate, updatedEndDate);
+        Vacation updatedVacation = new Vacation(vacationId, updatedName, updatedHotel, updatedStartDate, updatedEndDate, updatedCost);
         mDetailViewModel.update(updatedVacation);
 
         Toast.makeText(this, "Vacation details saved.", Toast.LENGTH_SHORT).show();

@@ -30,6 +30,7 @@ public class AddExcursionActivity extends AppCompatActivity {
     private int vacationId;
     private String vacationStartDateStr;
     private String vacationEndDateStr;
+    private EditText costExcursion;
 
 
     @Override
@@ -45,6 +46,7 @@ public class AddExcursionActivity extends AppCompatActivity {
         vacationStartDateStr = getIntent().getStringExtra("vacationStartDate");
         vacationEndDateStr = getIntent().getStringExtra("vacationEndDate");
 
+
         // Setup Toolbar
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
@@ -54,6 +56,7 @@ public class AddExcursionActivity extends AppCompatActivity {
         // Find views
         mEditExcursionTitle = findViewById(R.id.edit_text_excursion_title);
         mEditExcursionDate = findViewById(R.id.edit_text_excursion_date);
+        costExcursion = findViewById(R.id.edit_text_excursion_cost);
 
         // Set listener to show date picker
         mEditExcursionDate.setOnClickListener(v -> showDatePicker(mEditExcursionDate, "Select Excursion Date"));
@@ -99,6 +102,7 @@ public class AddExcursionActivity extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy", Locale.US);
         String title = mEditExcursionTitle.getText().toString().trim();
         String dateStr = mEditExcursionDate.getText().toString().trim();
+        String costStr = costExcursion.getText().toString().trim();
 
         if (title.isEmpty() || dateStr.isEmpty()) {
             Toast.makeText(this, "Please fill out all fields", Toast.LENGTH_SHORT).show();
@@ -121,7 +125,10 @@ public class AddExcursionActivity extends AppCompatActivity {
                 return;
 
             }
-            Excursion newExcursion = new Excursion(0, title, dateStr, vacationId);
+
+            double cost = Double.parseDouble(costStr);
+
+            Excursion newExcursion = new Excursion(0, title, dateStr, vacationId, cost);
             mDetailViewModel.insert(newExcursion);
             Toast.makeText(this, "Excursion saved!", Toast.LENGTH_SHORT).show();
 

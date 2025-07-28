@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,7 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.d308vacationplanner.R;
 import com.example.d308vacationplanner.entities.Excursion;
 import com.example.d308vacationplanner.entities.Vacation;
-
+import androidx.lifecycle.LifecycleOwner;
+import com.example.d308vacationplanner.database.Repository;
+import com.example.d308vacationplanner.entities.Excursion;
+import androidx.lifecycle.LiveData;
 import java.util.List;
 
 public class ExcursionAdapter extends RecyclerView.Adapter<ExcursionAdapter.ExcursionViewHolder> {
@@ -27,6 +31,7 @@ public class ExcursionAdapter extends RecyclerView.Adapter<ExcursionAdapter.Excu
 
         private final TextView excursionItemView;
         private final TextView excursionItemView2;
+        private final TextView excursionCostView;
 
 
 
@@ -34,6 +39,7 @@ public class ExcursionAdapter extends RecyclerView.Adapter<ExcursionAdapter.Excu
             super(itemView);
             excursionItemView = itemView.findViewById(R.id.textView_excursion_name);
             excursionItemView2 = itemView.findViewById(R.id.textView_excursion_date);
+            excursionCostView = itemView.findViewById(R.id.textView_excursion_cost);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -49,6 +55,7 @@ public class ExcursionAdapter extends RecyclerView.Adapter<ExcursionAdapter.Excu
                         intent.putExtra("date", current.getExcursionDate());
                         intent.putExtra("vacationStartDate", vacation.getStartDate()); // Must be in MM/dd/yy format
                         intent.putExtra("vacationEndDate", vacation.getEndDate());
+                        intent.putExtra("excursionCost", String.valueOf(current.getCost()));
 
                         context.startActivity(intent);
                     }
@@ -81,6 +88,7 @@ public class ExcursionAdapter extends RecyclerView.Adapter<ExcursionAdapter.Excu
 
             holder.excursionItemView.setText(name);
             holder.excursionItemView2.setText(date);
+            holder.excursionCostView.setText(String.format(Locale.US, "$%.2f", current.getCost()));
 
 
 

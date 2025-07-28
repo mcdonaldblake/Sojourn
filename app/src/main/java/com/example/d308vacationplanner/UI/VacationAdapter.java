@@ -13,12 +13,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.d308vacationplanner.R;
 import com.example.d308vacationplanner.entities.Vacation;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import com.example.d308vacationplanner.entities.Excursion;
+import com.example.d308vacationplanner.database.Repository;
+import com.example.d308vacationplanner.entities.VacationWithTotals;
+
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
 
 public class VacationAdapter extends RecyclerView.Adapter<VacationAdapter.VacationViewHolder> {
 
-    private List<Vacation> mVacations;
     private final Context context;
+
+    private List<VacationWithTotals> mVacationsWithTotals = new ArrayList<>();
+
 
     private final LayoutInflater mInflater;
 
@@ -27,25 +37,33 @@ public class VacationAdapter extends RecyclerView.Adapter<VacationAdapter.Vacati
         this.context = context;
     }
 
+    public void setVacationsWithTotals(List<VacationWithTotals> vacations) {
+        mVacationsWithTotals = vacations;
+        notifyDataSetChanged();
+    }
+
     public class VacationViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView vacationItemView;
+        private final TextView vacationCostView;
 
 
         public VacationViewHolder(@NonNull View itemView) {
             super(itemView);
             vacationItemView = itemView.findViewById(R.id.textView2);
+            vacationCostView = itemView.findViewById(R.id.textView_vacation_cost);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     int position = getAdapterPosition();
-                    final Vacation current = mVacations.get(position);
+                    final Vacation current = mVacationsWithTotals.get(position).vacation;
                     Intent intent = new Intent(context, EditVacation.class);
                     intent.putExtra("id", current.getVacationID());
                     intent.putExtra("name", current.getVacationName());
                     intent.putExtra("vacationStartDate", current.getStartDate());
                     intent.putExtra("vacationEndDate", current.getEndDate());
                     intent.putExtra("hotel", current.getHotel());
+                    intent.putExtra("vacationCost", String.valueOf(current.getCost()));
                     context.startActivity(intent);
 
 
@@ -64,10 +82,13 @@ public class VacationAdapter extends RecyclerView.Adapter<VacationAdapter.Vacati
 
     @Override
     public void onBindViewHolder(@NonNull VacationAdapter.VacationViewHolder holder, int position) {
-        if (mVacations != null) {
-            Vacation current = mVacations.get(position);
-            String name = current.getVacationName();
+        if (mVacationsWithTotals != null && position < mVacationsWithTotals .size()) {
+            VacationWithTotals current = mVacationsWithTotals.get(position);
+            String name = current.vacation.getVacationName();
+            double total = current.getTotalCost();
+
             holder.vacationItemView.setText(name);
+            holder.vacationCostView.setText(String.format(Locale.US, "$%.2f", total));
         } else {
             holder.vacationItemView.setText("No Vacation Name");
         }
@@ -75,13 +96,13 @@ public class VacationAdapter extends RecyclerView.Adapter<VacationAdapter.Vacati
 
     @Override
     public int getItemCount() {
-        if(mVacations!=null){
-            return mVacations.size();
+        if(mVacationsWithTotals!=null){
+            return mVacationsWithTotals.size();
         }
         else return 0;
     }
-    public void setVacations(List<Vacation> vacations) {
-        mVacations = vacations;
+    public void setVacations(List<VacationWithTotals> vacations) {
+        mVacationsWithTotals = vacations;
         notifyDataSetChanged();
     }
 }

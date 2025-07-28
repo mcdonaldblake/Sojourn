@@ -3,6 +3,8 @@ package com.example.d308vacationplanner.viewModel;
 import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
 import com.example.d308vacationplanner.database.Repository;
 import com.example.d308vacationplanner.entities.Excursion;
 import com.example.d308vacationplanner.entities.Vacation;
@@ -14,14 +16,15 @@ import com.example.d308vacationplanner.database.VacationDatabaseBuilder;
 public class DetailViewModel extends AndroidViewModel {
     private Repository mRepository;
 
+    private final MutableLiveData<String> mToastMessage = new MutableLiveData<>();
+
     public DetailViewModel(Application application) {
         super(application);
         mRepository = new Repository(application);
     }
-    // Add this new method inside your DetailViewModel.java class
 
-    public LiveData<List<Excursion>> getExcursionCountForVacation(int vacationId) {
-        return mRepository.getAllExcursions(vacationId);
+    public LiveData<String> getToastMessage() {
+        return mToastMessage;
     }
 
     public LiveData<List<Excursion>> getAssociatedExcursions(int vacationId) {
@@ -51,10 +54,24 @@ public class DetailViewModel extends AndroidViewModel {
     }
 
     public void update(Vacation vacation) {
+
         mRepository.update(vacation);
     }
 
-    public void delete(Vacation vacation) {
-        mRepository.delete(vacation);
+    public void deleteVacation (Vacation vacation) {
+        Repository.databaseExecutor.execute(() -> {
+            int vacationId = vacation.getVacationID();
+
+            int excursionCount = mRepository.getExcursionCountForVacation(vacationId);
+
+            if (excursionCount == 0) {
+                mRepository.delete(vacation);
+
+                mToastMessage.postValue("Vacation deleted successfully.");
+            } else {
+                mToastMessage.postValue("Cannot delete a vacation that has associated excursions.");
+            }
+            });
+
+        }
     }
-}

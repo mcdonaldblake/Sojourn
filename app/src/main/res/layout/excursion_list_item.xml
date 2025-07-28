@@ -32,6 +32,16 @@
             android:text="Excursion Date"
             android:textAppearance="?attr/textAppearanceCaption"
             android:textColor="?android:attr/textColorSecondary" />
+        
+        <TextView
+            android:id="@+id/textView_excursion_cost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Cost"
+            android:textAppearance="?attr/textAppearanceCaption"
+            android:textColor="?android:attr/textColorSecondary"
+            android:layout_gravity="end" />
 
     </LinearLayout>
 

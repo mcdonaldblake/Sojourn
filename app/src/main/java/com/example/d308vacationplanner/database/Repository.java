@@ -10,13 +10,14 @@ import com.example.d308vacationplanner.dao.ExcursionDAO;
 import com.example.d308vacationplanner.dao.VacationDAO;
 import com.example.d308vacationplanner.entities.Excursion;
 import com.example.d308vacationplanner.entities.Vacation;
+import com.example.d308vacationplanner.entities.VacationWithTotals;
 
 public class Repository {
     private final ExcursionDAO mExcursionDAO;
     private final VacationDAO mVacationDAO;
 
     private static final int NUMBER_OF_THREADS = 4;
-    static final ExecutorService databaseExecutor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+    public static final ExecutorService databaseExecutor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
     public Repository(Application application) {
 
@@ -70,5 +71,13 @@ public class Repository {
 
     public LiveData<List<Excursion>> getAllExcursions(int vacationId) {
     return mExcursionDAO.getAllExcursions();
+    }
+
+    public LiveData<List<VacationWithTotals>> getVacationsWithTotals() {
+        return mVacationDAO.getVacationsWithTotals();
+    }
+
+    public int getExcursionCountForVacation(int vacationId) {
+        return mExcursionDAO.getExcursionCountForVacation(vacationId);
     }
 }

@@ -103,6 +103,8 @@ public class AddVacationActivity extends AppCompatActivity {
         String updatedEndDate = mEditEndDate.getText().toString().trim();
 
 
+
+
         // Basic validation to make sure fields are not empty
         if (updatedName.isEmpty() || updatedHotel.isEmpty() || updatedStartDate.isEmpty() || updatedEndDate.isEmpty()) {
             Toast.makeText(this, "Please fill out all fields", Toast.LENGTH_SHORT).show();

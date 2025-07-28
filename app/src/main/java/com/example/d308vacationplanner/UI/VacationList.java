@@ -14,24 +14,19 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.d308vacationplanner.R;
-import com.example.d308vacationplanner.entities.Vacation;
 import com.example.d308vacationplanner.viewModel.VacationViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import java.util.Objects;
 
-import java.util.List;
 
 public class VacationList extends AppCompatActivity {
 
     private VacationAdapter vacationAdapter;
-    private VacationViewModel mVacationViewModel;
     private LinearLayout emptyStateLayout;
-    private Button addFirstVacation;
     private FloatingActionButton fab;
 
 
@@ -50,33 +45,30 @@ public class VacationList extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Sojourn Tracker");
 
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
         emptyStateLayout = findViewById(R.id.empty_state_layout);
-        addFirstVacation = findViewById(R.id.add_vacation_button_empty);
+        Button addFirstVacation = findViewById(R.id.add_vacation_button_empty);
         fab = findViewById(R.id.add_button);
         vacationAdapter = new VacationAdapter(this);
         recyclerView.setAdapter(vacationAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        mVacationViewModel = new ViewModelProvider(this).get(VacationViewModel.class);
+        VacationViewModel mVacationViewModel = new ViewModelProvider(this).get(VacationViewModel.class);
 
-        mVacationViewModel.getAllVacations().observe(this, new Observer<List<Vacation>>() {
-            @Override
-            public void onChanged(List<Vacation> vacations) {
-                vacationAdapter.setVacations(vacations);
+        mVacationViewModel.getVacationsWithTotals().observe(this, vacationWithTotals -> {
+            vacationAdapter.setVacations(vacationWithTotals);
 
-                if (vacations == null || vacations.isEmpty()) {
-                    recyclerView.setVisibility(View.GONE);
-                    fab.setVisibility(View.GONE);
-                    emptyStateLayout.setVisibility(View.VISIBLE);
-                } else {
-                    recyclerView.setVisibility(View.VISIBLE);
-                    fab.setVisibility(View.VISIBLE);
-                    emptyStateLayout.setVisibility(View.GONE);
-                }
+            if (vacationWithTotals == null || vacationWithTotals.isEmpty()) {
+                recyclerView.setVisibility(View.GONE);
+                fab.setVisibility(View.GONE);
+                emptyStateLayout.setVisibility(View.VISIBLE);
+            } else {
+                recyclerView.setVisibility(View.VISIBLE);
+                fab.setVisibility(View.VISIBLE);
+                emptyStateLayout.setVisibility(View.GONE);
             }
         });
 

@@ -57,6 +57,7 @@ public class EditVacation extends AppCompatActivity {
         String startDate = getIntent().getStringExtra("startDate");
         String endDate = getIntent().getStringExtra("endDate");
 
+
         // --- Setup Views ---
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
@@ -92,6 +93,16 @@ public class EditVacation extends AppCompatActivity {
                     excursionAdapter.setExcursions(excursions);
         });
                 }
+
+            mDetailViewModel.getToastMessage().observe(this, message -> {
+                if (message != null && !message.isEmpty()) {
+                    Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+
+                    if (message.contains("successfully")) {
+                        finish();
+                    }
+                }
+            });
 
 
         editStartDate.setOnClickListener(v -> showDatePicker(editStartDate, "Select Start Date"));
@@ -147,7 +158,11 @@ public class EditVacation extends AppCompatActivity {
             return true;
         }
         if (itemId == R.id.action_delete_vacation) {
-            deleteVacation();
+            if (currentVacation != null) {
+                mDetailViewModel.deleteVacation(currentVacation);
+            } else {
+                Toast.makeText(this, "Cannot delete, vacation not loaded yet.", Toast.LENGTH_SHORT).show();
+            }
             return true;
 
         }
@@ -284,7 +299,8 @@ public class EditVacation extends AppCompatActivity {
                 "Title: " + currentVacation.getVacationName() + "\n" +
                 "Hotel: " + currentVacation.getHotel() + "\n" +
                 "Start Date: " + currentVacation.getStartDate() + "\n" +
-                "End Date: " + currentVacation.getEndDate();
+                "End Date: " + currentVacation.getEndDate() + "\n" +
+                "Cost:" + currentVacation.getCost();
 
         // 2. Create a generic "share" Intent
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
@@ -296,17 +312,5 @@ public class EditVacation extends AppCompatActivity {
 
         // 4. Launch the Android share dialog
         startActivity(Intent.createChooser(sharingIntent, "Share via"));
-    }
-
-    private void deleteVacation() {
-        mDetailViewModel.getExcursionCountForVacation(vacationId).observe(this, excursions -> {
-            if (excursions == null || excursions.isEmpty()) {
-                mDetailViewModel.delete(currentVacation);
-                Toast.makeText(this, "Vacation deleted.", Toast.LENGTH_SHORT).show();
-                finish();
-            } else {
-                Toast.makeText(this, "Cannot delete vacation with attached excursions.", Toast.LENGTH_LONG).show();
-            }
-        });
     }
 }
